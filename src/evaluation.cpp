@@ -22,13 +22,22 @@ Value Letrec::eval(Assoc &env) {}
 
 Value Var::eval(Assoc &e) {}
 
-Value Fixnum::eval(Assoc &e) {}
+Value Fixnum::eval(Assoc &e) {
+  Value re= IntegerV(n);
+    return re;
+}
 
 Value If::eval(Assoc &e) {}
 
-Value True::eval(Assoc &e) {}
+Value True::eval(Assoc &e) {
+    Value re= BooleanV(true);
+        return re;
+}
 
-Value False::eval(Assoc &e) {}
+Value False::eval(Assoc &e) {
+    Value re= BooleanV(false);
+        return re;
+}
 
 Value Begin::eval(Assoc &e) {}
 
