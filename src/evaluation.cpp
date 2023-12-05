@@ -10,7 +10,9 @@
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
 
-Value Let::eval(Assoc &env) {}
+Value Let::eval(Assoc &env) {
+
+}
 
 Value Lambda::eval(Assoc &env) {}
 
