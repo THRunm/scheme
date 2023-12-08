@@ -43,55 +43,55 @@ struct Apply : ExprBase {
     std::vector<Expr> rand;
     Apply(const Expr &, const std :: vector<Expr> &);
     virtual Value eval(Assoc &) override;
-};
+}; // this is used to handle function calling, where rator is the operator and rands are operands
 
 struct Letrec : ExprBase {
-  std::vector<std::pair<std::string, Expr>> bind;
-  Expr body;
-  Letrec(const std :: vector<std :: pair<std :: string, Expr>> &, const Expr &);
-  virtual Value eval(Assoc &) override;
+    std::vector<std::pair<std::string, Expr>> bind;
+    Expr body;
+    Letrec(const std :: vector<std :: pair<std :: string, Expr>> &, const Expr &);
+    virtual Value eval(Assoc &) override;
 };
 
 struct Var : ExprBase {
-  std::string x;
-  Var(const std :: string &);
-  virtual Value eval(Assoc &) override;
+    std::string x;
+    Var(const std :: string &);
+    virtual Value eval(Assoc &) override;
 };
 
 struct Fixnum : ExprBase {
-  int n;
-  Fixnum(int);
-  virtual Value eval(Assoc &) override;
+    int n;
+    Fixnum(int);
+    virtual Value eval(Assoc &) override;
 };
 
 struct If : ExprBase {
-  Expr cond;
-  Expr conseq;
-  Expr alter;
-  If(const Expr &, const Expr &, const Expr &);
-  virtual Value eval(Assoc &) override;
+    Expr cond;
+    Expr conseq;
+    Expr alter;
+    If(const Expr &, const Expr &, const Expr &);
+    virtual Value eval(Assoc &) override;
 };
 
 struct True : ExprBase {
-  True();
-  virtual Value eval(Assoc &) override;
+    True();
+    virtual Value eval(Assoc &) override;
 };
 
 struct False : ExprBase {
-  False();
-  virtual Value eval(Assoc &) override;
+    False();
+    virtual Value eval(Assoc &) override;
 };
 
 struct Begin : ExprBase {
-  std::vector<Expr> es;
-  Begin(const std :: vector<Expr> &);
-  virtual Value eval(Assoc &) override;
+    std::vector<Expr> es;
+    Begin(const std :: vector<Expr> &);
+    virtual Value eval(Assoc &) override;
 };
 
 struct Quote : ExprBase {
-  Syntax s;
-  Quote(const Syntax &);
-  virtual Value eval(Assoc &) override;
+    Syntax s;
+    Quote(const Syntax &);
+    virtual Value eval(Assoc &) override;
 };
 
 struct MakeVoid : ExprBase {
