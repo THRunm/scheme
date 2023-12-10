@@ -51,7 +51,10 @@ Value MakeVoid::eval(Assoc &e) {
 } // (void)
 
 Value Exit::eval(Assoc &e) {
-
+    Exit *p = dynamic_cast<Exit *>(this);
+    Value re = new Terminate;
+    re->v_type = V_TERMINATE;
+    return re;
 } // (exit)
 
 Value Binary::eval(Assoc &e) {
@@ -63,6 +66,7 @@ Value Binary::eval(Assoc &e) {
             Value r1 = p->rand1->eval(e);
             Value r2 = p->rand2->eval(e);
             Value re=this->evalRator(r1,r2);
+            re->v_type = V_INT;
             return re;
         }
         case E_MINUS:
@@ -71,6 +75,7 @@ Value Binary::eval(Assoc &e) {
             Value r1 = p->rand1->eval(e);
             Value r2 = p->rand2->eval(e);
             Value re=this->evalRator(r1,r2);
+            re->v_type = V_INT;
             return re;
         }
         case E_MUL:
@@ -79,6 +84,7 @@ Value Binary::eval(Assoc &e) {
             Value r1 = p->rand1->eval(e);
             Value r2 = p->rand2->eval(e);
             Value re=this->evalRator(r1,r2);
+            re->v_type = V_INT;
             return re;
         }
     }
@@ -91,7 +97,9 @@ Value Mult::evalRator(const Value &rand1, const Value &rand2) {
     {
         Integer *r1 = dynamic_cast<Integer *>(rand1.get());
         Integer *r2 = dynamic_cast<Integer *>(rand2.get());
-        return Value(new Integer(r1->n * r2->n));
+        Value re(new Integer(r1->n * r2->n));
+        re->v_type = V_INT;
+        return re;
     }
     else
     {
@@ -104,7 +112,9 @@ Value Plus::evalRator(const Value &rand1, const Value &rand2) {
     {
         Integer *r1 = dynamic_cast<Integer *>(rand1.get());
         Integer *r2 = dynamic_cast<Integer *>(rand2.get());
-        return Value(new Integer(r1->n +r2->n));
+        Value re(new Integer(r1->n + r2->n));
+        re->v_type = V_INT;
+        return re;
     }
     else
     {
@@ -117,7 +127,9 @@ Value Minus::evalRator(const Value &rand1, const Value &rand2) {
     {
         Integer *r1 = dynamic_cast<Integer *>(rand1.get());
         Integer *r2 = dynamic_cast<Integer *>(rand2.get());
-        return Value(new Integer(r1->n - r2->n));
+        Value re(new Integer(r1->n - r2->n));
+        re->v_type = V_INT;
+        return re;
     }
     else
     {

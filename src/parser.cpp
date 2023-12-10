@@ -30,6 +30,7 @@ Expr Number :: parse(Assoc &env) {
     return re;
 }
 Expr Identifier :: parse(Assoc &env) {
+
     Expr re(new Var(s));
     re->e_type = E_VAR;
     return re;
@@ -53,8 +54,18 @@ Expr List :: parse(Assoc &env) {
         re->e_type = E_VOID;
         return re;
     }
+    if(stxs.size()==1){
+        if(stxs[0]->parse(env)->e_type==E_FIXNUM){
+            return stxs[0]->parse(env);
+        }
+    }
     Identifier *id = dynamic_cast<Identifier *>(stxs[0].get());
     switch (primitives[id->s]) {
+        case E_EXIT:{
+            Expr re(new Exit);
+            re->e_type = E_EXIT;
+            return re;
+        }
         case E_PLUS:
         {
             if (stxs.size() != 3)
