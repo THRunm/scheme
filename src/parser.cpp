@@ -8,6 +8,7 @@
 #include "syntax.hpp"
 #include "expr.hpp"
 #include <map>
+
 #include <cstring>
 #include <iostream>
 #define mp make_pair
@@ -30,6 +31,7 @@ Expr Number :: parse(Assoc &env) {
     return re;
 }
 Expr Identifier :: parse(Assoc &env) {
+
     Expr re(new Var(s));
     re->e_type = E_VAR;
     return re;
@@ -53,8 +55,31 @@ Expr List :: parse(Assoc &env) {
         re->e_type = E_VOID;
         return re;
     }
-    Identifier *id = dynamic_cast<Identifier *>(stxs[0].get());
-    switch (reserved_words[id->s]) {
+    if(List * lis=dynamic_cast<List*>(stxs[0].get()))
+    {
+//        if(Identifier *id=dynamic_cast<Identifier *>(lis->stxs[0].get())) {
+//            if (id->s == "lambda") {
+//                vector<Expr> xs;
+//                for (int i = 1; i < stxs.size(); ++i) {
+//                    xs.push_back(stxs[i]->parse(env));
+//                }
+//
+//                Expr re = new Apply(stxs[0]->parse(env), xs);
+//                return re;
+//            }
+//        }
+        Expr re=lis->parse(env);
+        return re;
+    }
+    Expr f = stxs[0]->parse(env);
+    if(Identifier *id = dynamic_cast<Identifier *>(stxs[0].get())){
+    string s = id->s;
+    ExprType et;
+    if (primitives.find(s) != primitives.end())
+        et = primitives[s];
+    else if (reserved_words.find(s) != reserved_words.end())
+        et = reserved_words[s];
+    switch (et) {
         case E_QUOTE:{
             if (stxs.size() != 2)
                 throw RuntimeError("wrong number of arguments for quote");
@@ -62,9 +87,73 @@ Expr List :: parse(Assoc &env) {
             re->e_type=E_QUOTE;
             return re;
         }
+        case E_IF:
+        {
+            if (stxs.size() != 4)
+                throw RuntimeError("wrong number of arguments for if");
+            Expr f1 = stxs[1]->parse(env);
+            Expr f2 = stxs[2]->parse(env);
+            Expr f3 = stxs[3]->parse(env);
+            Expr re(new If(f1,f2,f3));
+            re->e_type = E_IF;
+            return re;
+        }
+        case E_BEGIN:
+        {
+            if (stxs.size() < 2)
+                throw RuntimeError("wrong number of arguments for begin");
+            std::vector<Expr> es;
+            for (int i = 1; i < stxs.size(); ++i)
+                es.push_back(stxs[i]->parse(env));
+            Expr re(new Begin(es));
+            re->e_type = E_BEGIN;
+            return re;
+        }
+        case E_LAMBDA:
+        {
+            if (stxs.size() != 3)
+                throw RuntimeError("wrong number of arguments for lambda");
+            vector<string> params;
+            List *p=dynamic_cast<List*>(stxs[1].get());
+            for (int i = 0; i < p->stxs.size(); ++i) {
+                Identifier *id = dynamic_cast<Identifier *>(p->stxs[i].get());
+                params.push_back(id->s);
+            }
+            Expr body = stxs[2]->parse(env);
+            Expr re=new Lambda(params,body);
+            return re;
+        }
+        case E_LET:{
+            if (stxs.size() != 3)
+                throw RuntimeError("wrong number of arguments for let");
+            vector<pair<string,Expr>> bind;
+            List *p=dynamic_cast<List*>(stxs[1].get());
+            for (int i = 0; i < p->stxs.size(); ++i) {
+                List *q=dynamic_cast<List*>(p->stxs[i].get());
+                Identifier *id = dynamic_cast<Identifier *>(q->stxs[0].get());
+                bind.push_back(mp(id->s,q->stxs[1]->parse(env)));
+            }
+            Expr body = stxs[2]->parse(env);
+            Expr re=new Let(bind,body);
+            return re;
+        }
+        case E_LETREC:{
+            if (stxs.size() != 3)
+                throw RuntimeError("wrong number of arguments for letrec");
+            vector<pair<string,Expr>> bind;
+            List *p=dynamic_cast<List*>(stxs[1].get());
+            for (int i = 0; i < p->stxs.size(); ++i) {
+                List *q=dynamic_cast<List*>(p->stxs[i].get());
+                Identifier *id = dynamic_cast<Identifier *>(q->stxs[0].get());
+                bind.push_back(mp(id->s,q->stxs[1]->parse(env)));
+            }
+            Expr body = stxs[2]->parse(env);
+            Expr re=new Letrec(bind,body);
+            return re;
 
+        }
     }
-    switch (primitives[id->s]) {
+    switch (et) {
         case E_EXIT:{
             Expr re(new Exit);
             re->e_type = E_EXIT;
@@ -122,9 +211,11 @@ Expr List :: parse(Assoc &env) {
         }
         case E_EQ:
         {
-            if (stxs.size() != 3)
+            if (stxs.size() != 3) {
+                stxs[1]->show(std::cout);
+                std::cout<<stxs.size();
                 throw RuntimeError("wrong number of arguments for =");
-            Expr f1 = stxs[1]->parse(env);
+            }            Expr f1 = stxs[1]->parse(env);
             Expr f2 = stxs[2]->parse(env);
             Expr re=new Equal(f1,f2);
             re->e_type = E_EQ;
@@ -242,9 +333,17 @@ Expr List :: parse(Assoc &env) {
             re->e_type = E_PROCQ;
             return re;
         }
-
-
-    }
+        case E_VOID:{
+            Expr re(new MakeVoid);
+            re->e_type = E_VOID;
+            return re;
+        }
+    }}
+std::vector<Expr> es;
+for (int i = 1; i < stxs.size(); ++i)
+    es.push_back(stxs[i]->parse(env));
+Expr re(new Apply(f,es));
+    return re;
 }
 
 #endif

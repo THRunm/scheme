@@ -6,6 +6,7 @@ echo "--------------------------------------------------------------------------
 L=1
 R=117
 S=$(($R-$L+1))
+T
 for ((i = $L; i <= $R; i = i + 1))
 do
     echo ""
@@ -26,13 +27,14 @@ EOF
         # echo ""
         # exit 1
         S=$((S-1))
+        T=$T+$i
     fi
     echo "---------------------------"
     echo ""
 done
 
 L_EXTRA=1
-R_EXTRA=0
+R_EXTRA=7
 S=$((S+$(($R_EXTRA-$L_EXTRA+1))))
 for ((i = $L_EXTRA; i <= $R_EXTRA; i = i + 1))
 do
@@ -53,9 +55,12 @@ EOF
         # echo "---------------------------"
         # echo ""
         # exit 1
+        S=$((S-1))
+        T=$T+$i
     fi
     echo "---------------------------"
     echo ""
-    S=$((S-1))
+
 done
 echo $S "tests passed"
+echo "Wrong " $T
