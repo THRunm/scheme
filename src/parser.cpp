@@ -79,6 +79,7 @@ Expr List :: parse(Assoc &env) {
         et = primitives[s];
     else if (reserved_words.find(s) != reserved_words.end())
         et = reserved_words[s];
+    else { goto kop;}
     switch (et) {
         case E_QUOTE:{
             if (stxs.size() != 2)
@@ -212,8 +213,6 @@ Expr List :: parse(Assoc &env) {
         case E_EQ:
         {
             if (stxs.size() != 3) {
-                stxs[1]->show(std::cout);
-                std::cout<<stxs.size();
                 throw RuntimeError("wrong number of arguments for =");
             }            Expr f1 = stxs[1]->parse(env);
             Expr f2 = stxs[2]->parse(env);
@@ -339,6 +338,7 @@ Expr List :: parse(Assoc &env) {
             return re;
         }
     }}
+    kop:
 std::vector<Expr> es;
 for (int i = 1; i < stxs.size(); ++i)
     es.push_back(stxs[i]->parse(env));
