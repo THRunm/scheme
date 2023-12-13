@@ -33,31 +33,342 @@ Value Apply::eval(Assoc &e) {
         tmp= extend(r1->x[i],re,tmp);
     }
     return r1->e->eval(tmp);}
-    else if(Var *r1=dynamic_cast<Var*>(rator.get())){
-        Value t= find(r1->x,e);
-        Closure *r2=dynamic_cast<Closure*>(t.get());
-        Assoc tmp=e;
+    else if(Letrec*r1=dynamic_cast<Letrec*>(rator.get()))
+    {
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
         for(int i=0;i<r2->parameters.size();i++)
         {
             Value re=rand[i]->eval(e);
-            tmp=extend(r2->parameters[i],re,tmp);
+            tmp2=extend(r2->parameters[i],re,tmp2);
         }
-        return r2->e->eval(tmp);
+        return r2->e->eval(tmp2);
     }
+    else if(Let *r1=dynamic_cast<Let*>(rator.get()))
+    {
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(Apply *r1=dynamic_cast<Apply*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(If *r1=dynamic_cast<If*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(Quote *r1=dynamic_cast<Quote*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(MakeVoid *r1=dynamic_cast<MakeVoid*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(Exit *r1=dynamic_cast<Exit*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(Cons *r1=dynamic_cast<Cons*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(Car *r1=dynamic_cast<Car*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(Cdr *r1=dynamic_cast<Cdr*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(Not *r1=dynamic_cast<Not*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(IsSymbol *r1=dynamic_cast<IsSymbol*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(IsProcedure *r1=dynamic_cast<IsProcedure*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(IsPair *r1=dynamic_cast<IsPair*>(rator.get())){
+        Value tmp=r1->eval(e);
+        Closure *r2=dynamic_cast<Closure*>(tmp.get());
+        Assoc tmp2=e;
+
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Value re=rand[i]->eval(e);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+
+        }
+        return r2->e->eval(tmp2);
+
+    }
+    else if(IsNull *r1=dynamic_cast<IsNull*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(IsFixnum *r1=dynamic_cast<IsFixnum*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(IsBoolean *r1=dynamic_cast<IsBoolean*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(Equal *r1=dynamic_cast<Equal*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(Greater *r1=dynamic_cast<Greater*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+    else if(GreaterEq *r1=dynamic_cast<GreaterEq*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);}
+    else if(Less *r1=dynamic_cast<Less*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);}
+    else if(LessEq *r1=dynamic_cast<LessEq*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);}
+    else if(Minus *r1=dynamic_cast<Minus*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+
+        }
+        return r2->e->eval(tmp2);}
+    else if(Plus *r1=dynamic_cast<Plus*>(rator.get())) {
+        Value tmp = r1->eval(e);
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+
+        }
+        return r2->e->eval(tmp2);}
+    else if(Mult *r1=dynamic_cast<Mult*>(rator.get())) {
+        Value tmp = r1->eval(e);
+
+        Closure *r2 = dynamic_cast<Closure *>(tmp.get());
+        Assoc tmp2 = e;
+        for (int i = 0; i < r2->parameters.size(); i++) {
+
+            Value re = rand[i]->eval(e);
+            tmp2 = extend(r2->parameters[i], re, tmp2);
+        }
+        return r2->e->eval(tmp2);}
+    else if(Var *r1=dynamic_cast<Var*>(rator.get())){
+        Assoc tmp=e;
+        Value t= rator->eval(tmp);
+        Closure *r2=dynamic_cast<Closure*>(t.get());
+        Assoc tmp2=r2->env;
+        for(int i=0;i<r2->parameters.size();i++)
+        {
+            Assoc tmp3=e;
+            Value re=rand[i]->eval(tmp3);
+            tmp2=extend(r2->parameters[i],re,tmp2);
+        }
+        return r2->e->eval(tmp2);
+    }
+
+
 } // for function calling
 
 Value Letrec::eval(Assoc &env) {
     Assoc tmp=env;
     for(int i=0;i<bind.size();i++){
-        Value re=new Null();
-        re->v_type=V_NULL;
+        Value re=Value(nullptr);
         tmp=extend(bind[i].first,re,tmp);
     }
     Assoc tmp2=tmp;
     for (int i=0;i<bind.size();i++){
-        Value re=bind[i].second->eval(tmp2);
-        tmp2=extend(bind[i].first,re,tmp2);
+        Expr t=bind[i].second;
+
+        Value re=bind[i].second->eval(tmp);
+        if(Closure *p=dynamic_cast<Closure*>(re.get())){
+            Value re=bind[i].second->eval(tmp2);
+        }
+
+        modify(bind[i].first,re,tmp2);
     }
+
     return body->eval(tmp2);
 } // letrec expression
 
@@ -67,6 +378,8 @@ Value Var::eval(Assoc &e) {
             return p->v;
         }
     }
+
+    throw"var not find";
 }
      // evaluation of variable
 
@@ -168,12 +481,26 @@ Value Exit::eval(Assoc &e) {
 } // (exit)
 
 Value Binary::eval(Assoc &e) {
-    Value re=this->evalRator(rand1->eval(e),rand2->eval(e));
+    Assoc tmp=e;
+    Assoc tmp2=e;
+    Value r1=rand1->eval(e);
+    Value r2=rand2->eval(e);
+//    if(Closure*t=dynamic_cast<Closure*>(r1.get()))
+//    {
+//        Assoc tmp=e;
+//        for(int i=0;i<t->parameters.size();i++)
+//        {
+//            Value re=t[i]->eval(e);
+//            tmp=extend(t->parameters[i],re,tmp);
+//        }
+//    }
+    Value re=this->evalRator(r1,r2);
     return re;
 } // evaluation of two-operators primitive
 
 Value Unary::eval(Assoc &e) {
-    Value re=this->evalRator(rand->eval(e));
+    Assoc tmp=e;
+    Value re=this->evalRator(rand->eval(tmp));
     return re;
 } // evaluation of single-operator primitive
 
@@ -203,7 +530,8 @@ Value Plus::evalRator(const Value &rand1, const Value &rand2) {
     }
     else
     {
-        throw "error";
+        rand2->show(std::cout);
+        throw RuntimeError("error");
     }
 } // +
 
@@ -412,6 +740,20 @@ Value IsProcedure::evalRator(const Value &rand) {
         return re;
     }
 } // procedure?
+Value IsSymbol::evalRator(const Value &rand) {
+    if(rand->v_type == V_SYM)
+    {
+        Value re(new Boolean(true));
+        re->v_type = V_BOOL;
+        return re;
+    }
+    else
+    {
+        Value re(new Boolean(false));
+        re->v_type = V_BOOL;
+        return re;
+    }
+} // symbol?
 
 Value Not::evalRator(const Value &rand) {
     if(rand->v_type == V_BOOL)

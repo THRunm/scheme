@@ -31,7 +31,223 @@ Expr Number :: parse(Assoc &env) {
     return re;
 }
 Expr Identifier :: parse(Assoc &env) {
+    if(primitives.find(s)!=primitives.end())
+    {
+        switch (primitives[s]) {
+            case E_QUOTE:
+            {
+                Expr re(new Quote(nullptr));
+                re->e_type = E_QUOTE;
+                return re;
+            }
+            case E_IF:
+            {
+                Expr re(new If(nullptr,nullptr,nullptr));
+                re->e_type = E_IF;
+                return re;
+            }
+            case E_BEGIN:
+            {
+                Expr re(new Begin(vector<Expr>()));
+                re->e_type = E_BEGIN;
+                return re;
+            }
+            case E_LAMBDA:
+            {
+                Expr re(new Lambda(vector<string>(),nullptr));
+                re->e_type = E_LAMBDA;
+                return re;
+            }
+            case E_LET:
+            {
+                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
+                re->e_type = E_LET;
+                return re;
+            }
+            case E_LETREC:
+            {
+                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
+                re->e_type = E_LETREC;
+                return re;
+            }
+            case E_EXIT:
+            {
+                Expr re(new Exit);
+                re->e_type = E_EXIT;
+                return re;
+            }
+            case E_PLUS:
+            {
+                Expr re(new Plus(nullptr,nullptr));
+                re->e_type = E_PLUS;
+                return re;
+            }
+            case E_MINUS:
+            {
+                Expr re(new Minus(nullptr,nullptr));
+                re->e_type = E_MINUS;
+                return re;
+            }
+            case E_MUL:
+            {
+                Expr re(new Mult(nullptr,nullptr));
+                re->e_type = E_MUL;
+                return re;
+            }
+            case E_LT:
+            {
+                Expr re(new Less(nullptr,nullptr));
+                re->e_type = E_LT;
+                return re;
+            }
+            case E_LE:
+            {
+                Expr re(new LessEq(nullptr,nullptr));
+                re->e_type = E_LE;
+                return re;
+            }
+            case E_EQ:
+            {
+                Expr re(new Equal(nullptr,nullptr));
+                re->e_type = E_EQ;
+                return re;
+            }
+            case E_GE:
+            {
+                Expr re(new GreaterEq(nullptr,nullptr));
+                re->e_type = E_GE;
+                return re;
+            }
+            case E_GT:
+            {
+                Expr re(new Greater(nullptr,nullptr));
+                re->e_type = E_GT;
+                return re;
+            }
+            case E_CONS:
+            {
+                Expr re(new Cons(nullptr,nullptr));
+                re->e_type = E_CONS;
+                return re;
+            }
+            case E_NOT:
+            {
+                Expr re(new Not(nullptr));
+                re->e_type = E_NOT;
+                return re;
+            }
+            case E_CAR:
+            {
+                Expr re(new Car(nullptr));
+                re->e_type = E_CAR;
+                return re;
+            }
+            case E_CDR:
+            {
+                Expr re(new Cdr(nullptr));
+                re->e_type = E_CDR;
+                return re;
+            }
+            case E_EQQ:
+            {
+                Expr re(new IsEq(nullptr,nullptr));
+                re->e_type = E_EQQ;
+                return re;
+            }
+            case E_BOOLQ:
+            {
+                Expr re(new IsBoolean(nullptr));
+                re->e_type = E_BOOLQ;
+                return re;
+            }
+            case E_INTQ:
+            {
+                Expr re(new IsFixnum(nullptr));
+                re->e_type = E_INTQ;
+                return re;
+            }
+            case E_NULLQ:
+            {
+                Expr re(new IsNull(nullptr));
+                re->e_type = E_NULLQ;
+                return re;
+            }
+            case E_PAIRQ:
+            {
+                Expr re(new IsPair(nullptr));
+                re->e_type = E_PAIRQ;
+                return re;
+            }
+            case E_PROCQ:
+            {
+                Expr re(new IsProcedure(nullptr));
+                re->e_type = E_PROCQ;
+                return re;
+            }
+            case E_SYMBOLQ:
+            {
+                Expr re(new IsSymbol(nullptr));
+                re->e_type = E_SYMBOLQ;
+                return re;
+            }
+            case E_VOID:
+            {
+                Expr re(new MakeVoid);
+                re->e_type = E_VOID;
+                return re;
+            }
 
+
+        }
+
+    }
+    else if(reserved_words.find(s)!=reserved_words.end())
+    {
+        switch (reserved_words[s]) {
+            case E_QUOTE:
+            {
+                Expr re(new Quote(nullptr));
+                re->e_type = E_QUOTE;
+                return re;
+            }
+            case E_IF:
+            {
+                Expr re(new If(nullptr,nullptr,nullptr));
+                re->e_type = E_IF;
+                return re;
+            }
+            case E_BEGIN:
+            {
+                Expr re(new Begin(vector<Expr>()));
+                re->e_type = E_BEGIN;
+                return re;
+            }
+            case E_LAMBDA:
+            {
+                Expr re(new Lambda(vector<string>(),nullptr));
+                re->e_type = E_LAMBDA;
+                return re;
+            }
+            case E_LET:
+            {
+                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
+                re->e_type = E_LET;
+                return re;
+            }
+            case E_LETREC:
+            {
+                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
+                re->e_type = E_LETREC;
+                return re;
+            }
+            case E_EXIT:
+            {
+                Expr re(new Exit);
+                re->e_type = E_EXIT;
+                return re;
+            }
+        }
+    }
     Expr re(new Var(s));
     re->e_type = E_VAR;
     return re;
@@ -67,9 +283,10 @@ Expr List :: parse(Assoc &env) {
 //                Expr re = new Apply(stxs[0]->parse(env), xs);
 //                return re;
 //            }
+//
 //        }
-        Expr re=lis->parse(env);
-        return re;
+//        Expr re=lis->parse(env);
+//        return re;
     }
     Expr f = stxs[0]->parse(env);
     if(Identifier *id = dynamic_cast<Identifier *>(stxs[0].get())){
@@ -330,6 +547,15 @@ Expr List :: parse(Assoc &env) {
             Expr f1 = stxs[1]->parse(env);
             Expr re(new IsProcedure(f1));
             re->e_type = E_PROCQ;
+            return re;
+        }
+        case E_SYMBOLQ:
+        {
+            if (stxs.size() != 2)
+                throw RuntimeError("wrong number of arguments for symbol?");
+            Expr f1 = stxs[1]->parse(env);
+            Expr re(new IsSymbol(f1));
+            re->e_type = E_SYMBOLQ;
             return re;
         }
         case E_VOID:{
