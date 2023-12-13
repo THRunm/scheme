@@ -41,7 +41,11 @@ Value Apply::eval(Assoc &e) {
         for(int i=0;i<r2->parameters.size();i++)
         {
             Value re=rand[i]->eval(e);
-            tmp2=extend(r2->parameters[i],re,tmp2);
+            if(Closure *p=dynamic_cast<Closure*>(re.get()))
+            {
+                tmp2= extend(r2->parameters[i],rand[i]->eval(e),tmp2);
+            }
+            else tmp2=extend(r2->parameters[i],re,tmp2);
         }
         return r2->e->eval(tmp2);
     }
@@ -347,28 +351,24 @@ Value Apply::eval(Assoc &e) {
         }
         return r2->e->eval(tmp2);
     }
-
-
 } // for function calling
 
 Value Letrec::eval(Assoc &env) {
     Assoc tmp=env;
     for(int i=0;i<bind.size();i++){
-        Value re=Value(nullptr);
+        Value re(nullptr);
         tmp=extend(bind[i].first,re,tmp);
     }
     Assoc tmp2=tmp;
     for (int i=0;i<bind.size();i++){
         Expr t=bind[i].second;
-
         Value re=bind[i].second->eval(tmp);
         if(Closure *p=dynamic_cast<Closure*>(re.get())){
             Value re=bind[i].second->eval(tmp2);
+            env=tmp;
         }
-
         modify(bind[i].first,re,tmp2);
     }
-
     return body->eval(tmp2);
 } // letrec expression
 
