@@ -329,8 +329,8 @@ Expr List :: parse(Assoc &env) {
         }
         case E_LAMBDA:
         {
-            if (stxs.size() != 3)
-                throw RuntimeError("wrong number of arguments for lambda");
+//            if (stxs.size() != 3)
+//                throw RuntimeError("wrong number of arguments for lambda");
             vector<string> params;
             List *p=dynamic_cast<List*>(stxs[1].get());
             for (int i = 0; i < p->stxs.size(); ++i) {

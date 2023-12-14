@@ -13,9 +13,11 @@ extern std :: map<std :: string, ExprType> reserved_words;
 Value Let::eval(Assoc &env) {
     Assoc tmp=env;
         for(int i=0;i<bind.size();i++){
-            Value re=bind[i].second->eval(tmp);
+            Assoc tmp2=env;
+            Value re=bind[i].second->eval(tmp2);
             tmp=extend(bind[i].first,re,tmp);
         }
+
     return body->eval(tmp);
 } // let expression
 
@@ -51,23 +53,27 @@ Value Apply::eval(Assoc &e) {
     }
     else if(Let *r1=dynamic_cast<Let*>(rator.get()))
     {
-        Value tmp=r1->eval(e);
-        Closure *r2=dynamic_cast<Closure*>(tmp.get());
-        Assoc tmp2=e;
+        Assoc tmp=e;
+        Value t= rator->eval(tmp);
+        Closure *r2=dynamic_cast<Closure*>(t.get());
+        Assoc tmp2=r2->env;
         for(int i=0;i<r2->parameters.size();i++)
         {
-            Value re=rand[i]->eval(e);
+            Assoc tmp3=e;
+            Value re=rand[i]->eval(tmp3);
             tmp2=extend(r2->parameters[i],re,tmp2);
         }
         return r2->e->eval(tmp2);
     }
     else if(Apply *r1=dynamic_cast<Apply*>(rator.get())){
-        Value tmp=r1->eval(e);
-        Closure *r2=dynamic_cast<Closure*>(tmp.get());
-        Assoc tmp2=e;
+        Assoc tmp=e;
+        Value t= rator->eval(tmp);
+        Closure *r2=dynamic_cast<Closure*>(t.get());
+        Assoc tmp2=r2->env;
         for(int i=0;i<r2->parameters.size();i++)
         {
-            Value re=rand[i]->eval(e);
+            Assoc tmp3=e;
+            Value re=rand[i]->eval(tmp3);
             tmp2=extend(r2->parameters[i],re,tmp2);
         }
         return r2->e->eval(tmp2);
