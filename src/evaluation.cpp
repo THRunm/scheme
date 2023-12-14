@@ -47,10 +47,6 @@ Value Let::eval(Assoc &env) {
         for(int i=0;i<bind.size();i++){
             Assoc tmp2=env;
             Value re=bind[i].second->eval(tmp2);
-            if(Closure *p=dynamic_cast<Closure*>(re.get())){
-                Value re=bind[i].second->eval(tmp);
-                env=tmp;
-            }
             tmp=extend(bind[i].first,re,tmp);
         }
     return body->eval(tmp);
@@ -74,7 +70,7 @@ Value Apply::eval(Assoc &e) {
     {
         Value tmp=r1->eval(e);
         Closure *r2=dynamic_cast<Closure*>(tmp.get());
-        Assoc tmp2=e;
+        Assoc tmp2=r2->env;
         for(int i=0;i<r2->parameters.size();i++)
         {
             Value re=rand[i]->eval(e);
@@ -406,8 +402,8 @@ Value Letrec::eval(Assoc &env) {
         Expr t=bind[i].second;
         Value re=bind[i].second->eval(tmp);
         if(Closure *p=dynamic_cast<Closure*>(re.get())){
-            Value re=bind[i].second->eval(tmp2);
-            env=tmp;
+            re=bind[i].second->eval(tmp2);
+
         }
         modify(bind[i].first,re,tmp2);
     }
