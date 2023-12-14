@@ -10,14 +10,49 @@
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
 
+Value makeList(Assoc &e,const std::vector<Syntax> &stxs,int i);
+Value back(Assoc &e,const Syntax& u){
+    if(List *p=dynamic_cast<List*>(u.get())){
+        return makeList(e,p->stxs,0);
+    }
+    else if(Number *p=dynamic_cast<Number*>(u.get())){
+        return IntegerV(p->n);
+    }
+    else if(Identifier *p=dynamic_cast<Identifier*>(u.get())){
+        return SymbolV(p->s);
+    }
+    else if(TrueSyntax *p=dynamic_cast<TrueSyntax*>(u.get())){
+        return BooleanV(true);
+    }
+    else if(FalseSyntax *p=dynamic_cast<FalseSyntax*>(u.get())){
+        return BooleanV(false);
+    }
+
+    else{
+        throw "error";
+    }
+
+}
+Value makeList(Assoc &e,const std::vector<Syntax> &stxs,int i){
+    if(stxs.size()==0||i==stxs.size()){
+        return NullV();
+    }
+    else{
+        return PairV(back(e,stxs[i]),makeList(e,stxs,i+1));
+    }
+}
+
 Value Let::eval(Assoc &env) {
     Assoc tmp=env;
         for(int i=0;i<bind.size();i++){
             Assoc tmp2=env;
             Value re=bind[i].second->eval(tmp2);
+            if(Closure *p=dynamic_cast<Closure*>(re.get())){
+                Value re=bind[i].second->eval(tmp);
+                env=tmp;
+            }
             tmp=extend(bind[i].first,re,tmp);
         }
-
     return body->eval(tmp);
 } // let expression
 
@@ -345,6 +380,7 @@ Value Apply::eval(Assoc &e) {
         }
         return r2->e->eval(tmp2);}
     else if(Var *r1=dynamic_cast<Var*>(rator.get())){
+
         Assoc tmp=e;
         Value t= rator->eval(tmp);
         Closure *r2=dynamic_cast<Closure*>(t.get());
@@ -436,37 +472,7 @@ Value Begin::eval(Assoc &e) {
         return re;
     }
 } // begin expression
-Value makeList(Assoc &e,const std::vector<Syntax> &stxs,int i);
-Value back(Assoc &e,const Syntax& u){
-     if(List *p=dynamic_cast<List*>(u.get())){
-        return makeList(e,p->stxs,0);
-    }
-    else if(Number *p=dynamic_cast<Number*>(u.get())){
-        return IntegerV(p->n);
-    }
-    else if(Identifier *p=dynamic_cast<Identifier*>(u.get())){
-        return SymbolV(p->s);
-    }
-    else if(TrueSyntax *p=dynamic_cast<TrueSyntax*>(u.get())){
-        return BooleanV(true);
-    }
-    else if(FalseSyntax *p=dynamic_cast<FalseSyntax*>(u.get())){
-        return BooleanV(false);
-    }
 
-    else{
-        throw "error";
-    }
-
-}
-Value makeList(Assoc &e,const std::vector<Syntax> &stxs,int i){
-    if(stxs.size()==0||i==stxs.size()){
-        return NullV();
-    }
-    else{
-        return PairV(back(e,stxs[i]),makeList(e,stxs,i+1));
-    }
-}
 
 Value Quote::eval(Assoc &e) {
     Value re=back(e,s);
@@ -489,17 +495,8 @@ Value Exit::eval(Assoc &e) {
 Value Binary::eval(Assoc &e) {
     Assoc tmp=e;
     Assoc tmp2=e;
-    Value r1=rand1->eval(e);
-    Value r2=rand2->eval(e);
-//    if(Closure*t=dynamic_cast<Closure*>(r1.get()))
-//    {
-//        Assoc tmp=e;
-//        for(int i=0;i<t->parameters.size();i++)
-//        {
-//            Value re=t[i]->eval(e);
-//            tmp=extend(t->parameters[i],re,tmp);
-//        }
-//    }
+    Value r1=rand1->eval(tmp);
+    Value r2=rand2->eval(tmp2);
     Value re=this->evalRator(r1,r2);
     return re;
 } // evaluation of two-operators primitive

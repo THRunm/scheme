@@ -8,7 +8,7 @@
 #include "syntax.hpp"
 #include "expr.hpp"
 #include <map>
-
+#include "value.hpp"
 #include <cstring>
 #include <iostream>
 #define mp make_pair
@@ -16,7 +16,15 @@ using std :: string;
 using std :: vector;
 using std :: pair;
 
-
+vector<string> varna;
+bool check(string s)
+{
+    for (int i=0;i<varna.size();i++)
+    {
+        if(varna[i]==s)return true;
+    }
+    return false;
+}
 
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
@@ -31,223 +39,223 @@ Expr Number :: parse(Assoc &env) {
     return re;
 }
 Expr Identifier :: parse(Assoc &env) {
-    if(primitives.find(s)!=primitives.end())
-    {
-        switch (primitives[s]) {
-            case E_QUOTE:
-            {
-                Expr re(new Quote(nullptr));
-                re->e_type = E_QUOTE;
-                return re;
-            }
-            case E_IF:
-            {
-                Expr re(new If(nullptr,nullptr,nullptr));
-                re->e_type = E_IF;
-                return re;
-            }
-            case E_BEGIN:
-            {
-                Expr re(new Begin(vector<Expr>()));
-                re->e_type = E_BEGIN;
-                return re;
-            }
-            case E_LAMBDA:
-            {
-                Expr re(new Lambda(vector<string>(),nullptr));
-                re->e_type = E_LAMBDA;
-                return re;
-            }
-            case E_LET:
-            {
-                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
-                re->e_type = E_LET;
-                return re;
-            }
-            case E_LETREC:
-            {
-                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
-                re->e_type = E_LETREC;
-                return re;
-            }
-            case E_EXIT:
-            {
-                Expr re(new Exit);
-                re->e_type = E_EXIT;
-                return re;
-            }
-            case E_PLUS:
-            {
-                Expr re(new Plus(nullptr,nullptr));
-                re->e_type = E_PLUS;
-                return re;
-            }
-            case E_MINUS:
-            {
-                Expr re(new Minus(nullptr,nullptr));
-                re->e_type = E_MINUS;
-                return re;
-            }
-            case E_MUL:
-            {
-                Expr re(new Mult(nullptr,nullptr));
-                re->e_type = E_MUL;
-                return re;
-            }
-            case E_LT:
-            {
-                Expr re(new Less(nullptr,nullptr));
-                re->e_type = E_LT;
-                return re;
-            }
-            case E_LE:
-            {
-                Expr re(new LessEq(nullptr,nullptr));
-                re->e_type = E_LE;
-                return re;
-            }
-            case E_EQ:
-            {
-                Expr re(new Equal(nullptr,nullptr));
-                re->e_type = E_EQ;
-                return re;
-            }
-            case E_GE:
-            {
-                Expr re(new GreaterEq(nullptr,nullptr));
-                re->e_type = E_GE;
-                return re;
-            }
-            case E_GT:
-            {
-                Expr re(new Greater(nullptr,nullptr));
-                re->e_type = E_GT;
-                return re;
-            }
-            case E_CONS:
-            {
-                Expr re(new Cons(nullptr,nullptr));
-                re->e_type = E_CONS;
-                return re;
-            }
-            case E_NOT:
-            {
-                Expr re(new Not(nullptr));
-                re->e_type = E_NOT;
-                return re;
-            }
-            case E_CAR:
-            {
-                Expr re(new Car(nullptr));
-                re->e_type = E_CAR;
-                return re;
-            }
-            case E_CDR:
-            {
-                Expr re(new Cdr(nullptr));
-                re->e_type = E_CDR;
-                return re;
-            }
-            case E_EQQ:
-            {
-                Expr re(new IsEq(nullptr,nullptr));
-                re->e_type = E_EQQ;
-                return re;
-            }
-            case E_BOOLQ:
-            {
-                Expr re(new IsBoolean(nullptr));
-                re->e_type = E_BOOLQ;
-                return re;
-            }
-            case E_INTQ:
-            {
-                Expr re(new IsFixnum(nullptr));
-                re->e_type = E_INTQ;
-                return re;
-            }
-            case E_NULLQ:
-            {
-                Expr re(new IsNull(nullptr));
-                re->e_type = E_NULLQ;
-                return re;
-            }
-            case E_PAIRQ:
-            {
-                Expr re(new IsPair(nullptr));
-                re->e_type = E_PAIRQ;
-                return re;
-            }
-            case E_PROCQ:
-            {
-                Expr re(new IsProcedure(nullptr));
-                re->e_type = E_PROCQ;
-                return re;
-            }
-            case E_SYMBOLQ:
-            {
-                Expr re(new IsSymbol(nullptr));
-                re->e_type = E_SYMBOLQ;
-                return re;
-            }
-            case E_VOID:
-            {
-                Expr re(new MakeVoid);
-                re->e_type = E_VOID;
-                return re;
-            }
-
-
-        }
-
-    }
-    else if(reserved_words.find(s)!=reserved_words.end())
-    {
-        switch (reserved_words[s]) {
-            case E_QUOTE:
-            {
-                Expr re(new Quote(nullptr));
-                re->e_type = E_QUOTE;
-                return re;
-            }
-            case E_IF:
-            {
-                Expr re(new If(nullptr,nullptr,nullptr));
-                re->e_type = E_IF;
-                return re;
-            }
-            case E_BEGIN:
-            {
-                Expr re(new Begin(vector<Expr>()));
-                re->e_type = E_BEGIN;
-                return re;
-            }
-            case E_LAMBDA:
-            {
-                Expr re(new Lambda(vector<string>(),nullptr));
-                re->e_type = E_LAMBDA;
-                return re;
-            }
-            case E_LET:
-            {
-                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
-                re->e_type = E_LET;
-                return re;
-            }
-            case E_LETREC:
-            {
-                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
-                re->e_type = E_LETREC;
-                return re;
-            }
-            case E_EXIT:
-            {
-                Expr re(new Exit);
-                re->e_type = E_EXIT;
-                return re;
-            }
-        }
-    }
+//    if(primitives.find(s)!=primitives.end())
+//    {
+//        switch (primitives[s]) {
+//            case E_QUOTE:
+//            {
+//                Expr re(new Quote(nullptr));
+//                re->e_type = E_QUOTE;
+//                return re;
+//            }
+//            case E_IF:
+//            {
+//                Expr re(new If(nullptr,nullptr,nullptr));
+//                re->e_type = E_IF;
+//                return re;
+//            }
+//            case E_BEGIN:
+//            {
+//                Expr re(new Begin(vector<Expr>()));
+//                re->e_type = E_BEGIN;
+//                return re;
+//            }
+//            case E_LAMBDA:
+//            {
+//                Expr re(new Lambda(vector<string>(),nullptr));
+//                re->e_type = E_LAMBDA;
+//                return re;
+//            }
+//            case E_LET:
+//            {
+//                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
+//                re->e_type = E_LET;
+//                return re;
+//            }
+//            case E_LETREC:
+//            {
+//                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
+//                re->e_type = E_LETREC;
+//                return re;
+//            }
+//            case E_EXIT:
+//            {
+//                Expr re(new Exit);
+//                re->e_type = E_EXIT;
+//                return re;
+//            }
+//            case E_PLUS:
+//            {
+//                Expr re(new Plus(nullptr,nullptr));
+//                re->e_type = E_PLUS;
+//                return re;
+//            }
+//            case E_MINUS:
+//            {
+//                Expr re(new Minus(nullptr,nullptr));
+//                re->e_type = E_MINUS;
+//                return re;
+//            }
+//            case E_MUL:
+//            {
+//                Expr re(new Mult(nullptr,nullptr));
+//                re->e_type = E_MUL;
+//                return re;
+//            }
+//            case E_LT:
+//            {
+//                Expr re(new Less(nullptr,nullptr));
+//                re->e_type = E_LT;
+//                return re;
+//            }
+//            case E_LE:
+//            {
+//                Expr re(new LessEq(nullptr,nullptr));
+//                re->e_type = E_LE;
+//                return re;
+//            }
+//            case E_EQ:
+//            {
+//                Expr re(new Equal(nullptr,nullptr));
+//                re->e_type = E_EQ;
+//                return re;
+//            }
+//            case E_GE:
+//            {
+//                Expr re(new GreaterEq(nullptr,nullptr));
+//                re->e_type = E_GE;
+//                return re;
+//            }
+//            case E_GT:
+//            {
+//                Expr re(new Greater(nullptr,nullptr));
+//                re->e_type = E_GT;
+//                return re;
+//            }
+//            case E_CONS:
+//            {
+//                Expr re(new Cons(nullptr,nullptr));
+//                re->e_type = E_CONS;
+//                return re;
+//            }
+//            case E_NOT:
+//            {
+//                Expr re(new Not(nullptr));
+//                re->e_type = E_NOT;
+//                return re;
+//            }
+//            case E_CAR:
+//            {
+//                Expr re(new Car(nullptr));
+//                re->e_type = E_CAR;
+//                return re;
+//            }
+//            case E_CDR:
+//            {
+//                Expr re(new Cdr(nullptr));
+//                re->e_type = E_CDR;
+//                return re;
+//            }
+//            case E_EQQ:
+//            {
+//                Expr re(new IsEq(nullptr,nullptr));
+//                re->e_type = E_EQQ;
+//                return re;
+//            }
+//            case E_BOOLQ:
+//            {
+//                Expr re(new IsBoolean(nullptr));
+//                re->e_type = E_BOOLQ;
+//                return re;
+//            }
+//            case E_INTQ:
+//            {
+//                Expr re(new IsFixnum(nullptr));
+//                re->e_type = E_INTQ;
+//                return re;
+//            }
+//            case E_NULLQ:
+//            {
+//                Expr re(new IsNull(nullptr));
+//                re->e_type = E_NULLQ;
+//                return re;
+//            }
+//            case E_PAIRQ:
+//            {
+//                Expr re(new IsPair(nullptr));
+//                re->e_type = E_PAIRQ;
+//                return re;
+//            }
+//            case E_PROCQ:
+//            {
+//                Expr re(new IsProcedure(nullptr));
+//                re->e_type = E_PROCQ;
+//                return re;
+//            }
+//            case E_SYMBOLQ:
+//            {
+//                Expr re(new IsSymbol(nullptr));
+//                re->e_type = E_SYMBOLQ;
+//                return re;
+//            }
+//            case E_VOID:
+//            {
+//                Expr re(new MakeVoid);
+//                re->e_type = E_VOID;
+//                return re;
+//            }
+//
+//
+//        }
+//
+//    }
+//    else if(reserved_words.find(s)!=reserved_words.end())
+//    {
+//        switch (reserved_words[s]) {
+//            case E_QUOTE:
+//            {
+//                Expr re(new Quote(nullptr));
+//                re->e_type = E_QUOTE;
+//                return re;
+//            }
+//            case E_IF:
+//            {
+//                Expr re(new If(nullptr,nullptr,nullptr));
+//                re->e_type = E_IF;
+//                return re;
+//            }
+//            case E_BEGIN:
+//            {
+//                Expr re(new Begin(vector<Expr>()));
+//                re->e_type = E_BEGIN;
+//                return re;
+//            }
+//            case E_LAMBDA:
+//            {
+//                Expr re(new Lambda(vector<string>(),nullptr));
+//                re->e_type = E_LAMBDA;
+//                return re;
+//            }
+//            case E_LET:
+//            {
+//                Expr re(new Let(vector<pair<string,Expr>>(),nullptr));
+//                re->e_type = E_LET;
+//                return re;
+//            }
+//            case E_LETREC:
+//            {
+//                Expr re(new Letrec(vector<pair<string,Expr>>(),nullptr));
+//                re->e_type = E_LETREC;
+//                return re;
+//            }
+//            case E_EXIT:
+//            {
+//                Expr re(new Exit);
+//                re->e_type = E_EXIT;
+//                return re;
+//            }
+//        }
+//    }
     Expr re(new Var(s));
     re->e_type = E_VAR;
     return re;
@@ -294,6 +302,8 @@ Expr List :: parse(Assoc &env) {
     ExprType et;
     if (primitives.find(s) != primitives.end())
         et = primitives[s];
+    else if(check(s))
+ { goto kop;}
     else if (reserved_words.find(s) != reserved_words.end())
         et = reserved_words[s];
     else { goto kop;}
@@ -329,15 +339,19 @@ Expr List :: parse(Assoc &env) {
         }
         case E_LAMBDA:
         {
-//            if (stxs.size() != 3)
-//                throw RuntimeError("wrong number of arguments for lambda");
-            vector<string> params;
+            if (stxs.size() != 3)
+                goto kop;
+                vector<string> params;
+            int count=0;
             List *p=dynamic_cast<List*>(stxs[1].get());
             for (int i = 0; i < p->stxs.size(); ++i) {
                 Identifier *id = dynamic_cast<Identifier *>(p->stxs[i].get());
+                if(!check(id->s)){varna.push_back(id->s);
+                count++;}
                 params.push_back(id->s);
             }
             Expr body = stxs[2]->parse(env);
+            for (int i=0;i<count;i++)varna.pop_back();
             Expr re=new Lambda(params,body);
             return re;
         }
@@ -345,13 +359,19 @@ Expr List :: parse(Assoc &env) {
             if (stxs.size() != 3)
                 throw RuntimeError("wrong number of arguments for let");
             vector<pair<string,Expr>> bind;
+            int count=0;
+            vector<string>varnames;
             List *p=dynamic_cast<List*>(stxs[1].get());
             for (int i = 0; i < p->stxs.size(); ++i) {
                 List *q=dynamic_cast<List*>(p->stxs[i].get());
                 Identifier *id = dynamic_cast<Identifier *>(q->stxs[0].get());
+                if(!check(id->s)){varnames.push_back(id->s);
+                count++;}
                 bind.push_back(mp(id->s,q->stxs[1]->parse(env)));
             }
+            for(int i=0;i<count;i++)varna.push_back(varnames[i]);
             Expr body = stxs[2]->parse(env);
+            for (int i=0;i<count;i++)varna.pop_back();
             Expr re=new Let(bind,body);
             return re;
         }
@@ -359,13 +379,19 @@ Expr List :: parse(Assoc &env) {
             if (stxs.size() != 3)
                 throw RuntimeError("wrong number of arguments for letrec");
             vector<pair<string,Expr>> bind;
+            vector<string>varnames;
+            int count=0;
             List *p=dynamic_cast<List*>(stxs[1].get());
             for (int i = 0; i < p->stxs.size(); ++i) {
                 List *q=dynamic_cast<List*>(p->stxs[i].get());
                 Identifier *id = dynamic_cast<Identifier *>(q->stxs[0].get());
+                if(!check(id->s)){varnames.push_back(id->s);
+                count++;}
                 bind.push_back(mp(id->s,q->stxs[1]->parse(env)));
             }
+            for(int i=0;i<count;i++)varna.push_back(varnames[i]);
             Expr body = stxs[2]->parse(env);
+            for (int i=0;i<count;i++)varna.pop_back();
             Expr re=new Letrec(bind,body);
             return re;
 
