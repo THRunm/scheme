@@ -643,6 +643,14 @@ Value IsEq::evalRator(const Value &rand1, const Value &rand2) {
             re->v_type = V_BOOL;
             return re;
         }
+        else if(rand1->v_type==V_SYM)
+        {
+            Symbol *r1 = dynamic_cast<Symbol *>(rand1.get());
+            Symbol *r2 = dynamic_cast<Symbol *>(rand2.get());
+            Value re(new Boolean(r1->s == r2->s));
+            re->v_type = V_BOOL;
+            return re;
+        }
         else{
             ValueBase *i=&*(rand1.get());
             ValueBase *j=&*(rand2.get());
